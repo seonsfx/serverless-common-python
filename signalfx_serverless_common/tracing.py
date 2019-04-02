@@ -10,6 +10,7 @@ from . import utils
 def wrapper(func):
     @functools.wraps(func)
     def call(*args, **kwargs):
+        source = utils.get_source()
         function_name = os.environ.get('FUNCTION_NAME')
         if function_name is None:
             warnings.warn('FUNCTION_NAME cannot be found. Abort sending tracing')
@@ -18,9 +19,9 @@ def wrapper(func):
         tracer = init_jaeger_tracer(function_name)
 
         span_tags = utils.get_fields()
-        span_tags['component'] = 'python-gcf-wrapper'
+        span_tags['component'] = 'python-' + source + '-wrapper'
 
-        span_prefix = os.getenv('SIGNALFX_SPAN_PREFIX', 'gcf_python_')
+        span_prefix = os.getenv('SIGNALFX_SPAN_PREFIX', source + '_python_')
 
         try:
             with tracer.start_active_span(span_prefix + function_name, tags=span_tags) as scope:

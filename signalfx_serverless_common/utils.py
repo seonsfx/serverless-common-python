@@ -3,15 +3,14 @@ import warnings
 
 from .version import name, version
 
+source = None
 fields = {}
-dim_prefix = 'gcf'
+
+def get_source():
+    return source
 
 def get_fields():
     return fields.copy()
-
-def set_fields(fs):
-    for key, value in fs.items():
-        fields[key] = value
 
 def get_metrics_url():
     url = os.environ.get('SIGNALFX_INGEST_ENDPOINT')
@@ -48,3 +47,10 @@ def get_access_token():
         token = os.environ.get('SIGNALFX_AUTH_TOKEN')
 
     return token
+
+def set_source(s):
+    source = s
+
+def set_fields(fs):
+    for key, value in fs.items():
+        fields[key] = value
